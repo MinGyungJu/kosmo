@@ -1,4 +1,4 @@
-package chapter04_EX05;
+package chapter04.EX05;
 
 public class Using_While01 {
 

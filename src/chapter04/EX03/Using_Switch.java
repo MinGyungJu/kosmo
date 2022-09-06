@@ -1,4 +1,4 @@
-package chapter04_EX03;
+package chapter04.EX03;
 
 public class Using_Switch {
 

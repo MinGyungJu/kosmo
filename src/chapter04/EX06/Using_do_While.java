@@ -1,4 +1,4 @@
-package chapter04_EX06;
+package chapter04.EX06;
 
 public class Using_do_While {
 

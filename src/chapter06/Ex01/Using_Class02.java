@@ -19,7 +19,6 @@ class A{
 	// 기본 생성자 : 클래스이름과 동일한 메소드를 생성자라함, 리턴타입이 없다.
 		// 객체를 생성할때 초기값을 부여하는 역할을 합니다.
 	A (){}	
-	
 	//메소드 : 호출시 작동이 됩니다.
 	void print() {
 		int k = 10;		//지역 변수 : Stack 공간에 값이 저장됨 , 값을 넣지 않으면 비어있음.	
@@ -30,10 +29,7 @@ class A{
 
 // 외부 클래스
 class B{
-	
 }
-
-
 public class Using_Class02 {
 
 	public static void main(String[] args) {

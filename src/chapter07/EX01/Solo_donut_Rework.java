@@ -5,31 +5,30 @@ package chapter07.EX01;
 		//	3.14 X 반지름제곱
 		// 	피자의 넓이는 00 입니다. 
 		//	도넛의 넓이는 00 입니다.
-class Circle{
-	int radius;
+class Circle1{
+	int a;
 	String name;
 	
-	Circle (int radius, String name){
-		this.radius = radius;
+	Circle1(int a, String name){
+		this.a = a;
 		this.name = name;
 	}
 	
 	void call() {
-		double area;
-		area= 3.14 * radius * radius;
-		System.out.println(name +"의 넒이는 "+ area +" 입니다");
-	}
+		double b;
+		b= 3.14 * a * a;
+		System.out.println(name + "의 넓이는" + b+" 입니다");
+	}	
 }
 
-public class Using_Method02 {
+public class Solo_donut_Rework {
 
 	public static void main(String[] args) {
-		
-		Circle pizza = new Circle(10, "피자");
+		Circle1 pizza = new Circle1 (10, "피자");
 		pizza.call();
-		
-		Circle donut = new Circle(5, "도넛");
+		Circle1 donut = new Circle1 (5, "도넛");
 		donut.call();
+
 	}
 
 }

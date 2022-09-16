@@ -39,6 +39,11 @@ public class Using_Super03 {
 		System.out.println("============");
 		
 		//2. B
+		B bb1 = new B();
+		System.out.println("============");
+		
+		B bb2 = new B(3);
+		
 
 	}
 

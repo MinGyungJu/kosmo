@@ -1,4 +1,4 @@
-package basic1;
+package teacherChangeReview.basci1;
 
 /*
  * 반복문 : for / while / do~while

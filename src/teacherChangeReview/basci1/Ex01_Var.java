@@ -1,4 +1,4 @@
-package basic1;
+package teacherChangeReview.basci1;
 
 //import java.lang.String;
 public class Ex01_Var { //extends Object {

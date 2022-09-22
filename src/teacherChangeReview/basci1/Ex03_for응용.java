@@ -1,4 +1,4 @@
-package basic1;
+package teacherChangeReview.basci1;
 
 public class Ex03_for응용 {
 

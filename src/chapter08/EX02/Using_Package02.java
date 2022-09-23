@@ -19,7 +19,7 @@ public class Using_Package02 {
 		System.out.println("==A클래스 출력(public)==");
 		A a = new A();
 		
-		System.out.println(a.m);	//다른 패키ㅣㅈ에서 접근
+		System.out.println(a.m);	//다른 패키지에서 접근
 		System.out.println(a.n);
 		
 		a.print();

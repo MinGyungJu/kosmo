@@ -1,5 +1,7 @@
 package basic3;
 
+import java.util.Collections;
+
 public class Ex01_함수3 {
 	
 	public static void main(String[] args) {
@@ -11,6 +13,7 @@ public class Ex01_함수3 {
 			sum+=result[i];
 		}System.out.println("합계는" +sum);
 		
+		
 	}
 	
 	
@@ -19,5 +22,6 @@ public class Ex01_함수3 {
 		int []arr = {a,b};
 		
 		return arr;
+		
 	}
 }

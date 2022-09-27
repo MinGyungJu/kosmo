@@ -14,7 +14,7 @@ public class StackQueue {
 		s.push("B");
 		s.push("C");
 				
-		System.out.println(s.pop());
+		System.out.println(s.pop());  //c
 		
 		//2. 큐
 		Queue q = new LinkedList();
@@ -22,6 +22,6 @@ public class StackQueue {
 		q.offer("B");
 		q.offer("C");
 		
-		System.out.println(q.poll());
+		System.out.println(q.poll()); //a
 	}
 }

@@ -1,4 +1,4 @@
-package B_info;
+package B_info3;
 
 // awt 전부 임포트
 import java.awt.BorderLayout;
@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.Calendar; // 캘린터 유틸 임포트
 
 // javax의 swing 전부 임포트
@@ -28,8 +27,6 @@ public class InfoView {
 	JTextArea 	ta;	//텍스트 에어리어
 	JButton 	bAdd, bShow, bSearch, bDelete, bCancel, bExit; //버튼
 	
-	ArrayList<PersonVO> list = new ArrayList<PersonVO>();
-	                                   
 	//2. 멤버변수 객체생성
 	InfoView(){
 		
@@ -123,36 +120,23 @@ public class InfoView {
 		//'ADD' 버튼이 눌렸을때
 		bAdd.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				inputData();
-				clearTextField();
-				selectall();
+				JOptionPane.showMessageDialog(null, "이벤트발생1");
 			}
 		} ) ; // .addACtionListner ~~ 이부분은 복사해서 이벤트 발생시 다음에도 사용, 아래에 값엔 (null, 발생할 이벤트 내용입력) 
 		
 		bShow.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				selectall();
+				JOptionPane.showMessageDialog(null, "이벤트발생2");
 			}
 		} ) ;
-		
-		// 'Search' 버튼이 눌렸을 때
 		bSearch.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				selectByTel();
+				JOptionPane.showMessageDialog(null, "이벤트발생3");
 			}
 		} ) ;
-		// 전화번호 텍스트 필드에서 엔터쳤을때
-		tfTel.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				selectByTel();
-			}
-		} ) ;
-		
 		bDelete.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-	
-				deleteByTel();
-				selectall();
+				JOptionPane.showMessageDialog(null, "이벤트발생4");
 			}
 		} ) ;
 		bCancel.addActionListener(new ActionListener(){
@@ -194,93 +178,11 @@ public class InfoView {
 		
 	}// end of eventProc()
 	
-	void deleteByTel() {
-		//입력한 전화번호값을 얻어오기
-		//입력받은 전화번호가 공백이라면 메세지창을 출력
-		// 리스트에 저장된 PersonVO 의 전화번호와 비교하여
-		// 해당 전화번호가 없으면 그 해당하는 PersonVo를 리스트에서 삭제
-		// (참고) 삭제하고 나서 break로 반복문 끝내기
-		String tel = tfTel.getText();
-		if(tel.equals("")) {
-			JOptionPane.showMessageDialog(null, "전화번호를 입력하세요");
-			return;
-		}
-		for(PersonVO vo : list) {
-			if(tel.equals(vo.getTel())) {
-				list.remove(vo);
-				break;
-				
-			}
-		}
-		
-	}
-	
-	void selectByTel() {
-		/*
-		 * 함수명 : selectByTel
-		 * 인자	:없음
-		 * 리턴값 : void
-		 * 역할 : 
-		 */
-		//입력한 전화번호값을 얻어오기
-		String tel = tfTel.getText();
-		//입력받은 전화번호가 공백이라면 메세지창을 출력
-		if(tel.equals("")) {
-			JOptionPane.showMessageDialog(null, "전화번호를 입력하세요");
-			return;
-		}
-		// 리스트에 저장된 PersonVO 의 전화번호와 비교하여
-		// 해당 전화번호가 있으면 그 내용을 각각의 텍스트필드에 출력
-		for(PersonVO vo : list) {
-			if(tel.equals(vo.getTel())) {
-				tfName.setText(vo.getName());
-				tfId.setText(vo.getId());
-				tfSex.setText(vo.getSex());
-				tfAge.setText(Integer.toString(vo.getAge()));
-				tfHome.setText(vo.getHome());
-			}
-		}
-	}
-	
-	void selectall() {
-		/*
-		 * 리트스에 저장된 정보를 모두 텍스트에어리어에 출력
-		 */
-		ta.setText("-----------전체 목록-----------------\n\n");	
-		for(PersonVO vo : list) {	//강화된 for문 사용 , 여기서 단위는 PersonVO vo 로 했기에 왼쪽에 위치 오른쪾엔 어레이리스트로 선언한 list 
-									//강화된 for문을 사용하려면 객체생성시 genericsㄴ
-			ta.append(vo.toString());
-		}
-	} // end of selectall()
-	
-	
-	void inputData() {
-		/*
-		 * 'ADD' 버튼이 눌렸을 떄 텍스트필드에 입력한 사용자의 값들을 PersonVO에 저장하기
-		 */
-		//(1) 각각의 텍스트필드의 입력값을 얻어오기
-		//(2) 1번의 값들을 PersonVO 멤버변수에 저장 (1. 세터 or 2. 생성자)
-		PersonVO vo = new PersonVO();	//vo 객체생성
-		
-		vo.setName(tfName.getText()); // tfName 으로 텍스틀르 가져온값을 만든 vo객체에 세팅
-		vo.setId(tfId.getText());
-		vo.setTel(tfTel.getText());
-		vo.setSex(tfSex.getText());
-		vo.setAge(Integer.parseInt(tfAge.getText()));	// 스트링값을 int로 받기위해 Integer.parseInt 사용
-		vo.setHome(tfHome.getText());
-		// (1) 텍스트필드의 입력값을 얻어오기는 .getText() 를 통해서 하고
-		// (2) 가져온 값들을 PersonVO 저장하는법은 PersonVo 에 새로운 객체를 생성 후 거기에 .set해서 넣기
-		
-		list.add(vo);
-		
-	}
-	
-	
+	/*
+	 * 각각의 텍스트 필드와 텍스트에어리어의 값을 지우기
+	 */
 	void clearTextField() {
-		/*
-		 * 각각의 텍스트 필드와 텍스트에어리어의 값을 지우기
-		 */
-		ta.setText(null);	// 전에했던 ta.setText("") 과 비슷한 원리
+		ta.setText(null);
 		// 나머지 텍스트필드도 지우기
 		tfName.setText(null);
 		tfId.setText(null);

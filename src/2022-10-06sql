@@ -1,0 +1,212 @@
+--1. 사원명에 ‘L’자가 있는 사원에 대해 이름, 업무, 부서명, 위치를 출력
+SELECT E.ENAME, E.JOB, D.DNAME, D.LOC
+FROM EMP E, DEPT D
+WHERE E.DEPTNO = D.DEPTNO
+AND E.ENAME LIKE '%L%';
+--GROUP BY
+--HAVING
+--ORDER BY
+--표준안
+SELECT E.ENAME, E.JOB, D.DNAME, D.LOC
+FROM EMP E INNER JOIN DEPT D
+ON E.DEPTNO = D.DEPTNO
+WHERE E.ENAME LIKE '%L%';
+-- 양쪽다 완벽하게 연결된거 INNER, 한쪽안나오는것도 보이게하기위해서는 OUTER
+?
+--2. 관리자보다 먼저 입사한 사원에 대해 이름, 입사일, 관리자 이름, 관리자 입사일을 출력
+SELECT E1.ENAME, E1.HIREDATE, E2.ENAME, E2.HIREDATE 
+FROM EMP E1 FULL OUTER JOIN EMP E2
+ON E1.MGR=E2.EMPNO
+WHERE E1.HIREDATE<E2.HIREDATE;
+
+
+--3. 아래의 결과를 출력 ( 관리자가 없는 KING을 포함하여 모든 사원을 출력 )
+/*
+사번 사원명 매니저사번 매니저명
+7839 KING 
+7698 BLAKE 7839 KING 
+7782 CLARK 7839 KING
+:
+*/
+SELECT E1.EMPNO  사번, E1.ENAME  사원명, E2.EMPNO  매니저사번,E2.ENAME  매니저사번 
+FROM    EMP E1 LEFT OUTER JOIN EMP E2
+        ON E1.MGR = E2.MGR;
+        
+---서브 쿼리---
+SELECT ROUND(AVG(SAL)) 
+FROM EMP; 
+
+SELECT ENAME, SAL 
+FROM EMP 
+WHERE SAL < (SELECT ROUND(AVG(SAL)) FROM EMP );
+        
+-- 월급이 가장 많은 사원의 정보 조회
+SELECT *
+FROM EMP
+WHERE SAL = (SELECT MAX(SAL) FROM EMP);
+-- 평균 급여보다 높고 최대 급여보다 낮은 월급을 받는 사원의 정보를 조회
+SELECT *
+FROM EMP
+WHERE SAL >(SELECT AVG(SAL) FROM EMP) 
+AND SAL < (SELECT MAX(SAL) FROM EMP);
+
+SELECT E.*
+FROM EMP E, (SELECT ROUND(AVG(SAL)) AVG, MAX(SAL) MAX FROM EMP) EXT
+WHERE E.SAL > EXT.AVG
+AND E.SAL < EXT.MAX;
+
+-- 월급순으로 상위 10명의 명단을 출력
+SELECT *
+FROM EMP
+WHERE ROWNUM < 11
+ORDER BY NVL(SAL,0) DESC;
+
+SELECT *
+FROM  (SELECT ENAME, SAL FROM EMP ORDER BY SAL DESC) E
+WHERE ROWNUM < 11;
+
+?
+
+--1. SCOTT의 급여보다 많은 사원의 정보를 사원번호, 이름, 담당업무, 급여를 출력
+SELECT  EMPNO, ENAME, JOB, SAL
+FROM EMP
+WHERE SAL > (SELECT SAL FROM EMP WHERE ENAME LIKE 'SCOTT');
+
+
+--2. 30번 부서의 최소 급여보다 
+--각부서의 최소 급여가 높은 부서를 출력
+SELECT DEPTNO
+FROM EMP
+WHERE deptno is not null
+GROUP BY DEPTNO
+HAVING MIN(SAL) > (SELECT MIN(SAL) FROM EMP WHERE DEPTNO =30 );
+
+
+--3. 업무별로 평균 급여 중에서 
+--가장 적은 급여를 가진 직업을 출력
+SELECT JOB,ROUND(AVG(SAL)) 
+FROM EMP 
+GROUP BY JOB
+HAVING AVG(SAL) = (SELECT MIN(AVG(SAL)) FROM EMP GROUP BY JOB);
+
+
+
+--4. 사원번호가 7521의 업무와 같고 
+--사번 7934인 직원보다 급여를 많이 받는 사원의 정보를 출력 (X)
+SELECT E.*
+FROM EMP E,
+        ( SELECT * FROM EMP WHERE EMPNO = 7521 ) S1,
+        ( SELECT * FROM EMP WHERE EMPNO = 7934 ) S2
+WHERE E.JOB = S1.JOB 
+AND E.SAL > S2.SAL;
+
+?
+--5. 'WARD'와 부서와 업무가 같은 사원 명단 출력(X)
+SELECT E.*
+FROM EMP E,
+        ( SELECT * FROM EMP WHERE ENAME = 'WARD' ) S
+WHERE E.DEPTNO = S.DEPTNO 
+AND E.JOB = S.JOB;
+
+SELECT * FROM EMP E,
+(SELECT JOB, DEPTNO FROM EMP WHERE ENAME ='WARD') E2
+WHERE E.DEPTNO = E2.DEPTNO AND E.JOB = E2.JOB;
+
+-- 업무별로 최소 급여를 받는 사원의 정보를 사원번호, 이름, 담당업무, 급여를 출력
+SELECT MIN(SAL)
+FROM EMP
+GROUP BY JOB;
+
+SELECT EMPNO, ENAME, JOB, SAL
+FROM EMP
+WHERE (JOB,SAL) IN (SELECT JOB, MIN(SAL)
+            FROM EMP
+            GROUP BY JOB) ;
+            
+INSERT INTO EMP(EMPNO, ENAME, JOB, SAL) VALUES (9999,'테스트','CLERK',1250);
+
+-- 10번 부서 사원들의 업무와 동일한 직원들 검색
+SELECT JOB
+FROM EMP
+WHERE DEPTNO = 10;
+
+SELECT ENAME, JOB
+FROM EMP
+WHERE JOB =ANY (SELECT JOB
+                FROM EMP
+                WHERE DEPTNO = 10);
+    
+SELECT ENAME, JOB
+FROM EMP
+WHERE JOB  IN (SELECT JOB
+                FROM EMP
+                WHERE DEPTNO = 10);
+                
+               
+ -- 적어도 한명의 사원으로부터 
+ --보고를 받을 수 있는 사원의 정보를 사원번호, 이름, 업무를 출력
+ SELECT EMPNO, ENAME, JOB
+ FROM EMP E1
+ WHERE EXISTS (SELECT * FROM EMP E2 WHERE E1.EMPNO = E2.MGR  );
+ 
+ --말단 직원구하기(일반사원) = 매니저아닌사람
+  SELECT EMPNO, ENAME, JOB
+ FROM EMP E1
+ WHERE NOT EXISTS (SELECT * FROM EMP E2 WHERE E1.EMPNO = E2.MGR  );
+ 
+ --문제
+-- 1. Zlotkey와 동일한 부서에 속한 모든 사원의 이름과 입사일을 표시하는 질의를 작성하십시오. 
+        -- Zlotkey는 제외하십시오.
+SELECT LAST_NAME, HIRE_DATE
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM EMPLOYEES WHERE DEPARTMENT_ID LIKE 80)
+AND LAST_NAME NOT LIKE 'Zlotkey';
+?
+--2. 급여가 평균 급여보다 많은 
+--모든 사원의 사원 번호와 이름을 표시하는 질의를 작성하고 
+--결과를 급여에 대해 오름차순으로 정렬하십시오.
+SELECT EMPLOYEE_ID, LAST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY >ANY (SELECT AVG(SALARY) FROM EMPLOYEES)
+ORDER BY SALARY DESC;
+?
+--3. 이름에 u가 포함된 사원과 
+--같은 부서에서 일하는 모든 사원의 사원 번호와 이름을 표시하는
+--질의를 작성하십시오.
+SELECT EMPLOYEE_ID, FIRST_NAME ||' '|| LAST_NAME AS 이름
+FROM EMPLOYEES 
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM EMPLOYEES WHERE FIRST_NAME ||' '|| LAST_NAME LIKE '%u%');
+
+--4. 부서 위치 ID가 1700인 모든 사원의 이름, 부서 번호 및 업무 ID를 표시하십시오.
+SELECT E.FIRST_NAME ||' '|| LAST_NAME AS 이름, E.DEPARTMENT_ID, E.JOB_ID
+FROM EMPLOYEES E LEFT OUTER JOIN DEPARTMENTS D
+ON E.DEPARTMENT_ID = D.DEPARTMENT_ID
+WHERE D.LOCATION_ID IN (SELECT D.LOCATION_ID FROM DEPARTMENTS  WHERE D.LOCATION_ID = 1700);
+?
+
+--5. King에게 보고하는 모든 사원의 이름과 급여를 표시하십시오.(X)
+SELECT FIRST_NAME ||' '|| LAST_NAME AS 이름, SALARY
+FROM EMPLOYEES 
+WHERE MANAGER_ID IN (SELECT EMPLOYEE_ID  FROM EMPLOYEES  WHERE LAST_NAME ='King' );
+
+
+--6. Executive 부서의 모든 사원에 대한 부서 번호, 이름 및 업무 ID를 표시하십시오.(x)
+SELECT DEPARTMENT_ID, FIRST_NAME ||' '|| LAST_NAME, JOB_ID
+FROM EMPLOYEES 
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENTS WHERE DEPARTMENT_NAME LIKE 'Executive');
+
+SELECT DEPARTMENT_ID, FIRST_NAME ||' '|| LAST_NAME FULL_NAME, employee_id
+FROM employees
+WHERE department_id = (SELECT department_id FROM departments WHERE department_name ='Executive');
+
+
+--7. 평균 급여보다 많은 급여를 받고 이름에 u가 포함된 사원과 같은 부서에서 근무하는 
+--모든 사원의 사원 번호, 이름 및 급여를 표시하는 질의를 작성하십시오.
+SELECT EMPLOYEE_ID, FIRST_NAME ||' '|| LAST_NAME AS 이름, SALARY
+FROM EMPLOYEES
+WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEES)
+AND DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM EMPLOYEES WHERE  CONCAT(FIRST_NAME,LAST_NAME) LIKE '%u%');
+
+
+
+?

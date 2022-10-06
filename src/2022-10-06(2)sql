@@ -1,0 +1,49 @@
+--(1) 부서별 급여통계 테이블 생성
+CREATE TABLE STAT_SALARY 
+( 
+    STAT_DATE   DATE NOT NULL, -- 날짜
+    DEPT_NO     NUMBER, -- 부서
+    EMP_COUNT   NUMBER, -- 사원수
+    TOT_SALARY  NUMBER, -- 급여총액
+    AVG_SALARY  NUMBER -- 급여평균
+); 
+
+DESC STAT_SALARY;
+--(2) 날짜와 부서번호 입력
+SELECT SYSDATE, DEPTNO 
+FROM EMP
+GROUP BY DEPTNO;
+--(3) 사원수, 급여총액, 평균급여 입력(?) -> 수정
+INSERT INTO STAT_SALARY(STAT_DATE, DEPT_NO) SELECT SYSDATE, DEPTNO 
+                                            FROM EMP
+                                            GROUP BY DEPTNO;
+SELECT * FROM STAT_SALARY;
+
+SELECT COUNT(*),SUM(SAL),ROUND(AVG(SAL))
+FROM EMP
+GROUP BY DEPTNO;
+
+UPDATE STAT_SALARY SS
+SET (EMP_COUNT, TOT_SALARY, AVG_SALARY) 
+= (SELECT COUNT(*),SUM(SAL),ROUND(AVG(SAL))
+   FROM EMP E
+   WHERE SS.DEPT_NO = E.DEPTNO
+   GROUP BY DEPTNO);
+
+SELECT * FROM STAT_SALARY;
+
+--다시연습
+CREATE TABLE EMP_CP AS SELECT * FROM EMP;
+SELECT * FROM EMP_CP;
+DROP TABLE EMP_CP;
+-- 부서명이 'SALES' 인 사원의 정보 삭제 (EMP_CP)
+DELETE FROM EMP_CP
+WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE DNAME ='SALES');
+SELECT * FROM EMP_CP;
+
+--사원테이블에 존재하는 사원이면 사원의 급여를 10% 인상하고,
+--존재하지 않는 사원이면 사원테이블에 정보를 입력한다
+
+
+
+
